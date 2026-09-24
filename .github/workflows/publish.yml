@@ -4,15 +4,19 @@
 #
 # Tags are bare semver, e.g. `0.2.0`, and `npm run release` creates one.
 #
-# Publishing is not set up yet. It needs ONE of:
+# Publishing is not set up yet, and the two mechanisms are a sequence rather than a choice.
 #
-#   A. Trusted Publishing (preferred, no stored secret). On npmjs.com, under the package's
-#      Publish access, add a GitHub Actions trusted publisher for crustdata/n8n-nodes-crustdata
-#      with workflow `publish.yml` and no environment. Leave NPM_TOKEN unset.
-#   B. A granular access token scoped to this package with read and write, stored as the
-#      NPM_TOKEN repository secret.
+# The FIRST publish needs an NPM_TOKEN repository secret, because npm cannot configure
+# trusted publishing for a package that does not exist yet: `npm trust` requires the package
+# to be on the registry already (npm/cli#8544). Classic tokens no longer exist, so this is a
+# granular token, and granular write tokens cap at 90 days.
 #
-# Provenance is signed by GitHub's OIDC infrastructure either way.
+# AFTERWARDS, add a GitHub Actions trusted publisher for this repo and workflow on npmjs.com
+# and delete the secret. The step below skips the token path whenever NPM_TOKEN is unset, so
+# removing the secret is the whole migration.
+#
+# Provenance is signed by GitHub's OIDC infrastructure either way, and needs `id-token: write`
+# below plus a public repo.
 
 name: Publish
 
