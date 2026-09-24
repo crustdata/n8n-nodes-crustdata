@@ -1,0 +1,16 @@
+{
+  "node": "n8n-nodes-crustdata.crustdataTrigger",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Data & Storage", "Sales", "Marketing"],
+  "alias": ["Crustdata", "Watch", "Trigger", "Job Change", "Signal", "Monitor", "LinkedIn", "Lead"],
+  "subcategories": { "Data & Storage": ["Data Enrichment"] },
+  "resources": {
+    "credentialDocumentation": [
+      { "url": "https://github.com/crustdata/n8n-nodes-crustdata?tab=readme-ov-file#credentials" }
+    ],
+    "primaryDocumentation": [
+      { "url": "https://github.com/crustdata/n8n-nodes-crustdata?tab=readme-ov-file" }
+    ]
+  }
+}

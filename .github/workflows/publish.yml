@@ -1,0 +1,66 @@
+# Publishes n8n-nodes-crustdata to npm with a provenance attestation, on every version
+# tag push. n8n requires community nodes to be published from GitHub Actions with provenance,
+# which is what `id-token: write` and the release step below are for.
+#
+# Tags are bare semver, e.g. `0.2.0`, and `npm run release` creates one.
+#
+# Publishing is not set up yet. It needs ONE of:
+#
+#   A. Trusted Publishing (preferred, no stored secret). On npmjs.com, under the package's
+#      Publish access, add a GitHub Actions trusted publisher for crustdata/n8n-nodes-crustdata
+#      with workflow `publish.yml` and no environment. Leave NPM_TOKEN unset.
+#   B. A granular access token scoped to this package with read and write, stored as the
+#      NPM_TOKEN repository secret.
+#
+# Provenance is signed by GitHub's OIDC infrastructure either way.
+
+name: Publish
+
+on:
+  push:
+    tags:
+      # Matches 0.1.0, 1.2.3, 2.0.0-rc.1, etc.
+      # See "TAG CONVENTION" above if you prefer tags with a "v" prefix.
+      - '*.*.*'
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Required to mint an OIDC token for npm provenance attestation.
+      id-token: write
+      # Scoped down from the default (write) for least-privilege publishing.
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: 'npm ci'
+
+      - name: Release
+        # Publishes to npm with a provenance attestation (requires id-token: write above).
+        # Lint and build run automatically as part of the release process.
+        #
+        # Option A (OIDC): leave NPM_TOKEN unset, the token step is skipped and
+        #   npm uses the OIDC exchange instead.
+        # Option B (token): set NPM_TOKEN in repo secrets, and it is written to
+        #   .npmrc here before publishing.
+        run: |
+          # An `&&` one-liner here is exempt from `set -e` only while another command
+          # follows it. Made an `if` so that reordering or appending cannot turn the
+          # unset-token case, which is Option A above, into a silent step failure.
+          if [ -n "$NPM_TOKEN" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          fi
+          npm run release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

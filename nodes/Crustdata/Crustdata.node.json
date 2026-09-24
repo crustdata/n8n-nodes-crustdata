@@ -1,0 +1,46 @@
+{
+  "node": "n8n-nodes-crustdata.crustdata",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Data & Storage",
+    "Sales",
+    "Marketing"
+  ],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://github.com/crustdata/n8n-nodes-crustdata?tab=readme-ov-file#credentials"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://github.com/crustdata/n8n-nodes-crustdata?tab=readme-ov-file"
+      }
+    ]
+  },
+  "alias": [
+    "Crustdata",
+    "LinkedIn",
+    "Prospect",
+    "Lead",
+    "Enrich",
+    "Email",
+    "People",
+    "Company",
+    "B2B",
+    "Contact",
+    "Sourcing",
+    "Firmographic",
+    "Headcount",
+    "Funding",
+    "ICP",
+    "Web Search",
+    "Scrape"
+  ],
+  "subcategories": {
+    "Data & Storage": [
+      "Data Enrichment"
+    ]
+  }
+}

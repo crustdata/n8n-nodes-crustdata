@@ -1,0 +1,64 @@
+{
+  "name": "n8n-nodes-crustdata",
+  "version": "0.1.0",
+  "description": "Search and enrich 800M+ people and 200M+ companies with Crustdata, plus live web search",
+  "license": "MIT",
+  "homepage": "https://crustdata.com",
+  "keywords": [
+    "n8n-community-node-package",
+    "crustdata",
+    "enrichment",
+    "b2b-data",
+    "prospecting",
+    "people-search",
+    "company-data",
+    "web-search"
+  ],
+  "author": {
+    "name": "Crustdata",
+    "email": "support@crustdata.co"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crustdata/n8n-nodes-crustdata.git"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix",
+    "release": "n8n-node release",
+    "prepublishOnly": "n8n-node prerelease",
+    "gen:fields": "node scripts/gen-filter-fields.mjs",
+    "gen:fields:check": "node scripts/gen-filter-fields.mjs --check",
+    "pretest": "npm run build",
+    "test": "vitest run"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "credentials": [
+      "dist/credentials/CrustdataApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Crustdata/Crustdata.node.js",
+      "dist/nodes/CrustdataTrigger/CrustdataTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^0.48.5",
+    "eslint": "9.32.0",
+    "js-yaml": "^4.1.0",
+    "prettier": "3.6.2",
+    "release-it": "^21.1.0",
+    "typescript": "5.9.2",
+    "vitest": "^5.0.1"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
