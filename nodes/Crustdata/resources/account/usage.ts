@@ -211,9 +211,8 @@ export const accountUsageDescription: INodeProperties[] = [
 const UNSAFE_IN_PATH = /[^A-Za-z0-9._~-]/;
 
 /**
- * The ID lands in the path, and the control takes an expression, so its value can arrive from
- * upstream data or from a model. The spec types it as a 256-character string rather than a
- * uuid, so the check is on the characters, not the shape.
+ * Checked on the characters rather than the shape: the spec types this as a 256-character
+ * string, not a uuid, and it lands in the request path.
  */
 export async function sendUsageEvent(
 	this: IExecuteSingleFunctions,
@@ -231,14 +230,11 @@ export async function sendUsageEvent(
 }
 
 /**
- * With `bucket=1d` over a window of whole UTC days the summary is read from daily rollups,
- * which do not carry every dimension. Live-verified 2026-09-24: grouping by `component` then
- * admits only `day` and `product` beside it and only the `products` filter, and the `status`
- * and `error_type` filters are refused outright. An hourly bucket or a window that is not
- * whole days reads every request and accepts all of it.
- *
- * The default window is the last 7 whole days, so the restricted mode is the one a caller
- * lands in without choosing it.
+ * Over whole UTC days with `bucket=1d` the summary comes from daily rollups, which do not
+ * carry every dimension: `component` then admits only `day`/`product` beside it and only the
+ * `products` filter, and `status`/`error_type` are refused outright. An hourly bucket or a
+ * part-day window accepts all of it. The DEFAULT window is whole days, so this is the mode a
+ * caller lands in without choosing it.
  */
 const COMPONENT_ALLOWS = ['day', 'product'];
 const HOURLY_ONLY = [

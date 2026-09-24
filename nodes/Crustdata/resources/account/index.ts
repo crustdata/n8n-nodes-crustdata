@@ -6,8 +6,7 @@ const showOnlyForAccount = {
 	resource: ['account'],
 };
 
-/** Every operation here is free. Credits and Endpoints take no parameters; the usage reports
- *  take a window and share a limit of 60 requests a minute between them. */
+/** The three usage reports share one limit of 60 requests a minute between them. */
 export const accountDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
@@ -46,8 +45,7 @@ export const accountDescription: INodeProperties[] = [
 				description:
 					'One request by its ID, with the body, query and headers it was sent with and the error body it got back. Free.',
 				routing: {
-					// Replaced in preSend once the ID is checked; a routing block must declare
-					// something for the operation to dispatch at all.
+					// A routing block must declare something to dispatch at all; preSend replaces it.
 					request: { method: 'GET', url: '/account/usage/events' },
 					send: { preSend: [sendUsageEvent] },
 				},

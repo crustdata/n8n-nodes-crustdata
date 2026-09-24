@@ -3,9 +3,8 @@ import { assertKnown } from '../diagnostics';
 import { FIELD_VOCABULARY } from '../filter-fields.generated';
 
 /**
- * `fields` is a response whitelist, so a name the endpoint does not know is a 400 that
- * lists every valid field and nothing about which one you meant. Each operation accepts a
- * different vocabulary, hence the `resource.operation` key.
+ * `fields` is a response whitelist, so an unknown name is a 400 listing every valid field and
+ * nothing about which one you meant. Each operation accepts a different vocabulary.
  */
 export async function validateFields(
 	this: IExecuteSingleFunctions,

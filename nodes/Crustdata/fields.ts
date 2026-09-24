@@ -7,13 +7,10 @@ type FieldsOptions = {
 };
 
 /**
- * One `fields` control for every operation, over that operation's own vocabulary
- * (`FIELD_VOCABULARY`, keyed `resource.operation`).
- *
- * For search the vocabulary is walked out of the 200-response record, so a filter-only
- * column cannot appear: it is filterable but never returned, and asking for one is a 400
- * whose `metadata.available_fields` is the only hint you get. A family name selects the
- * whole family, which is why branch nodes sit beside their leaves.
+ * For search the vocabulary is walked out of the 200-response record, so a filter-only column
+ * cannot appear: it is filterable but never returned, and asking for one is a 400 whose
+ * `metadata.available_fields` is the only hint you get. A family name selects the whole family,
+ * which is why branch nodes sit beside their leaves.
  */
 export function fieldsProperty(
 	resource: string,

@@ -12,11 +12,9 @@ const MAX_PAGES = 15;
 const MAX_URLS = 10;
 
 /**
- * Declared in the spec's `sources` enum but not offered, live-verified 2026-09-24. `social`
- * answers 200 with zero rows for any query, so offering it is a control that silently
- * returns nothing; the two scholar-article values answer 500 on every query tried. The
- * remainder of the enum is offered, and `sources-are-a-verified-subset` in the test suite
- * fails if the spec's list changes, so an upstream fix gets re-checked rather than missed.
+ * In the spec's `sources` enum but not offered: `social` answers 200 with zero rows for any
+ * query, so it would be a control that silently returns nothing, and the two scholar-article
+ * values answer 500. A test pins this against the spec's list, so an upstream fix surfaces.
  */
 export const EXCLUDED_SOURCES = ['scholar-articles', 'scholar-articles-enriched', 'social'] as const;
 
@@ -102,8 +100,6 @@ export const webDescription: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		placeholder: 'e.g. US',
-		// Two letters here, against the three-letter codes the person and company filter
-		// columns take. Getting it wrong is a 400 naming the value, not a silent miss.
 		description:
 			'Country to target results at, as an ISO 3166-1 alpha-2 code. Two letters, unlike the three-letter codes the filter columns take.',
 		displayOptions: { show: showOnlyForWebSearch },
@@ -185,9 +181,8 @@ export const webDescription: INodeProperties[] = [
 ];
 
 /**
- * Aggregating pages merges several result sets, which the API will only do within a single
- * source. Sending none is allowed and searches them all, so only a selection of two or more
- * is refused. Caught here because the 400 costs a round trip against 10 requests a minute.
+ * Pages merge within one source only. Sending NONE is accepted and searches them all, which
+ * the API's own 400 ("requires exactly one source") denies, so only two or more is refused.
  */
 export async function assertPageSources(
 	this: IExecuteSingleFunctions,

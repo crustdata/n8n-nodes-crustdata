@@ -20,11 +20,8 @@ export const NEXT_STEP_HINTS: NodeHint[] = [
 			'={{ $parameter["resource"] === "company" && $parameter["operation"] === "enrich" }}',
 	},
 	{
-		// Loop Over Items ALONE is backwards here: it makes one call per row. Batched to 25
-		// with an Aggregate inside it, it is the only shape that works past 25, because
-		// Aggregate on its own joins every row and the API refuses the 26th.
-		// The cap is 25 on every identifier endpoint, live-verified 2026-09-22; the spec
-		// declares it for company identify only.
+		// The cap is 25 on every identifier endpoint; the spec declares it for company
+		// identify alone, so it cannot be generated.
 		message:
 			'Enriching a list? Put an <b>Aggregate</b> node before this one and join the values: one call instead of one per row, and the rate limit is per request, not per record. Over 25 rows, wrap both in <b>Loop Over Items</b> with batch size 25, because a single call takes at most 25 values.',
 		type: 'info',

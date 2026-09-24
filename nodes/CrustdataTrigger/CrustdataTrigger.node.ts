@@ -86,8 +86,8 @@ export class CrustdataTrigger implements INodeType {
 		webhooks: [{ name: 'default', httpMethod: 'POST', responseMode: 'onReceived', path: 'webhook' }],
 		hints: [
 			{
-				// A failed delivery is never replayed into the workflow; the watch's own run list is
-				// the only place a missed notification is still recoverable.
+				// A failed delivery is never replayed into the workflow, so that list is the only
+				// place a missed notification survives.
 				message:
 					'Every run is recorded on the watch itself. <b>Watch → Get Runs</b> on the Crustdata node lists them, including runs whose delivery to n8n never arrived.',
 				type: 'info',

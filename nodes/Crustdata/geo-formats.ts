@@ -4,13 +4,12 @@ import { nearestValid } from './diagnostics';
 
 /**
  * Inconsistent inside one dataset: `basic_profile.location.country` wants the full name while
- * these want the code. The other valid form is structurally fine, so the API answers ZERO ROWS
- * and no error. The name-wanting columns carry autocomplete and steer themselves; these cannot,
- * because the API's autocomplete endpoint does not offer them.
+ * these want the code. The wrong form is structurally fine, so the API answers ZERO ROWS and no
+ * error, and unlike the name-wanting columns these carry no autocomplete to steer themselves.
  *
- * Hand-maintained: `value_format` is published only through the docs, not the spec the generator
- * reads. A test pins each path against the generated filter list, so a rename breaks the build
- * rather than silently disarming the guard.
+ * Hand-maintained, because `value_format` is published only through the docs and not the spec
+ * the generator reads. A test pins each path against the generated filter list, so a rename
+ * breaks the build rather than silently disarming the guard.
  */
 const ISO3_COLUMNS: readonly string[] = [
 	'experience.employment_details.company_headquarters_country',
@@ -19,9 +18,8 @@ const ISO3_COLUMNS: readonly string[] = [
 ];
 
 /**
- * Names as the deployed API stores them, from the MCP server's live-verified map (ADR-0034):
- * hence `Czechia` over `Czech Republic` and `Türkiye` over `Turkey`. Only the suggestion needs
- * this table, so an unlisted country is still caught by the shape check below.
+ * Names as the DEPLOYED API stores them, which is not always the current common name. Only the
+ * suggestion reads this, so an unlisted country is still caught by the shape check below.
  */
 const NAME_TO_ISO3: Readonly<Record<string, string>> = {
 	'united states': 'USA', 'united kingdom': 'GBR', canada: 'CAN', australia: 'AUS',
@@ -38,10 +36,8 @@ const NAME_TO_ISO3: Readonly<Record<string, string>> = {
 };
 
 /**
- * Forms the store does not hold, so a caller reaching for one is provably wrong.
- *
- * Nothing here may be exactly three letters: the shape check passes those through unread, and
- * that is correct, because the API matches them case-insensitively ("usa" finds what "USA" does).
+ * Nothing here may be exactly three letters: the shape check passes those through unread, which
+ * is correct because the API matches them case-insensitively.
  */
 const ALIASES: Readonly<Record<string, string>> = {
 	'u.s.': 'USA', 'u.s.a.': 'USA', us: 'USA', america: 'USA',
