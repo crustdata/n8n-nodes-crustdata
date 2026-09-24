@@ -47,8 +47,7 @@ const RESULT_KEYS = [
 const isPlainObject = (v: unknown): v is IDataObject =>
 	typeof v === 'object' && v !== null && !Array.isArray(v);
 
-/** The envelope's result array, wherever it sits. Shared with the pagination loop, which
- *  counts what a page returned to keep its own budget. */
+/** Shared with the pagination loop, which counts what a page returned to keep its budget. */
 export function resultArray(json: unknown): unknown[] | undefined {
 	if (!isPlainObject(json)) return undefined;
 	const key = RESULT_KEYS.find((k) => Array.isArray(json[k]));

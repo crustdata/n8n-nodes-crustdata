@@ -1,11 +1,7 @@
 import { NodeOperationError } from 'n8n-workflow';
 import type { INode, INodePropertyOptions } from 'n8n-workflow';
 
-/**
- * Watch paths, in one place because both nodes address them and the rules are not
- * symmetric: the Trigger creates and deletes, the Watch resource reads and edits, and a
- * second copy of these would drift apart exactly where a wrong path is a silent 404.
- */
+/** Both nodes address these, and a second copy would drift where a wrong path is a silent 404. */
 
 /** Entity watches live under /watch/{dataset}; discovery watches under /watch/{dataset}/search. */
 export const watchPath = (kind: string, dataset: string, watchId?: string | number): string => {
@@ -14,9 +10,8 @@ export const watchPath = (kind: string, dataset: string, watchId?: string | numb
 };
 
 /**
- * The spec types both ids as integers and both land in the request path, so they are
- * checked rather than interpolated — an expression can put anything here, and a value with
- * a slash in it would point the credential at a URL we did not choose.
+ * These land in the request path and the controls take expressions, so a value with a slash
+ * in it would point the credential at a URL we did not choose.
  */
 export function assertWatchId(node: INode, value: unknown, parameter: string): string {
 	const id = String(value ?? '').trim();
@@ -29,10 +24,9 @@ export function assertWatchId(node: INode, value: unknown, parameter: string): s
 }
 
 /**
- * The dataset lands in the request path exactly as the ids do, and a picker constrains the
- * UI but not an expression. Checked against the kind's own list: `job` and `social_post`
- * exist only as discovery watches, so accepting one on the entity tree is a 404 dressed up
- * as an empty result.
+ * Checked against the KIND's own list, not one shared list: `job` and `social_post` exist
+ * only as discovery watches, so accepting one on the entity tree is a 404 that reads as an
+ * empty result.
  */
 export function assertDataset(node: INode, kind: string, value: unknown): string {
 	const allowed = (kind === 'discovery' ? DISCOVERY_DATASETS : ENTITY_DATASETS).map((o) =>

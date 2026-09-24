@@ -16,10 +16,8 @@ const showOnlyForCompanySearch = {
  * that are rejections rather than preferences: with `search` set, `sorts` and `cursor`
  * are REFUSED and `limit` caps at 100, and the response's `total_count` and `next_cursor`
  * come back null. So ranked results are one relevance-ordered window; you narrow with
- * filters instead of paging.
- *
- * Hence the split below. Offering Sort or Return All beside a query would be offering a
- * guaranteed 400.
+ * filters instead of paging, and offering Sort or Return All beside a query would be offering
+ * a guaranteed 400.
  */
 const rankedMode = { ...showOnlyForCompanySearch, query: [{ _cnd: { not: '' } }] };
 

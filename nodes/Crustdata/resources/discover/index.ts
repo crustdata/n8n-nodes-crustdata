@@ -93,11 +93,9 @@ export const discoverDescription: INodeProperties[] = [
 ];
 
 /**
- * Answered entirely from the generated tables, so it costs nothing and cannot drift from
- * what the pickers offer: both read the same constants.
- *
- * Its reason for existing is the agent case. A model holding this node as a tool can read
- * the exact column names here instead of guessing one and paying for the 400 that follows.
+ * Reads the same constants the pickers do, so it cannot drift from what they offer. It exists
+ * for the agent case: a model can read the exact column names instead of guessing one and
+ * paying for the 400 that follows.
  */
 export async function describe(
 	this: IExecuteSingleFunctions,
