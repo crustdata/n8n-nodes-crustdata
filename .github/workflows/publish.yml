@@ -13,7 +13,13 @@
 #
 # AFTERWARDS, add a GitHub Actions trusted publisher for this repo and workflow on npmjs.com
 # and delete the secret. The step below skips the token path whenever NPM_TOKEN is unset, so
-# removing the secret is the whole migration.
+# removing the secret is the whole migration. That first step is a HUMAN one: since August
+# 2026 a bypass-2FA token cannot change trusted publishing configuration, so it cannot
+# bootstrap its own replacement.
+#
+# There is a deadline. npm removes direct publish from bypass-2FA tokens around January 2027,
+# leaving them able only to STAGE a publish for a maintainer to approve with 2FA. A release
+# after that with no trusted publisher configured does not fail loudly, it waits for a human.
 #
 # Provenance is signed by GitHub's OIDC infrastructure either way, and needs `id-token: write`
 # below plus a public repo.
