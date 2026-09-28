@@ -1,37 +1,19 @@
-# Publishes n8n-nodes-crustdata to npm with a provenance attestation, on every version
-# tag push. n8n requires community nodes to be published from GitHub Actions with provenance,
-# which is what `id-token: write` and the release step below are for.
+# Publishes n8n-nodes-crustdata to npm with provenance on a version tag push; n8n requires
+# community nodes to be published this way. Tags are bare semver, e.g. `0.2.0`.
 #
-# Tags are bare semver, e.g. `0.2.0`, and `npm run release` creates one.
-#
-# The two publish mechanisms are a sequence rather than a choice, and we are at step one.
-#
-# The FIRST publish needs an NPM_TOKEN repository secret, because npm cannot configure
-# trusted publishing for a package that does not exist yet: `npm trust` requires the package
-# to be on the registry already (npm/cli#8544). Classic tokens no longer exist, so this is a
-# granular token, and granular write tokens cap at 90 days. That secret is set (IT-189), so
-# a tag push publishes today.
-#
-# AFTERWARDS, add a GitHub Actions trusted publisher for this repo and workflow on npmjs.com
-# and delete the secret. The step below skips the token path whenever NPM_TOKEN is unset, so
-# removing the secret is the whole migration. That first step is a HUMAN one: since August
-# 2026 a bypass-2FA token cannot change trusted publishing configuration, so it cannot
-# bootstrap its own replacement.
-#
-# There is a deadline. npm removes direct publish from bypass-2FA tokens around January 2027,
-# leaving them able only to STAGE a publish for a maintainer to approve with 2FA. A release
-# after that with no trusted publisher configured does not fail loudly, it waits for a human.
-#
-# Provenance is signed by GitHub's OIDC infrastructure either way, and needs `id-token: write`
-# below plus a public repo.
+# The token and trusted publishing are a sequence, not a choice: npm cannot configure trusted
+# publishing for a package that does not exist yet (npm/cli#8544), so the first publish needs
+# the NPM_TOKEN secret. Afterwards add a trusted publisher on npmjs.com and delete the secret;
+# the step below skips the token whenever NPM_TOKEN is unset, so that is the whole migration.
+# It cannot be scripted: a bypass-2FA token may not change trusted publishing configuration.
+# IT-189 tracks the token and the deadline after which a token publish only STAGES a release
+# for a maintainer to approve.
 
 name: Publish
 
 on:
   push:
     tags:
-      # Matches 0.1.0, 1.2.3, 2.0.0-rc.1, etc.
-      # See "TAG CONVENTION" above if you prefer tags with a "v" prefix.
       - '*.*.*'
 
 jobs:
@@ -58,16 +40,11 @@ jobs:
         run: 'npm ci'
 
       - name: Release
-        # Publishes to npm with a provenance attestation (requires id-token: write above).
-        # Lint and build run automatically as part of the release process.
-        #
-        # NPM_TOKEN is set today, so it is written to .npmrc below. Once a trusted publisher
-        # exists and the secret is deleted, this step skips the token and npm uses the OIDC
-        # exchange instead, which is the migration described at the top of this file.
+        # `npm run release` lints and builds first; in CI it skips release-it entirely and
+        # publishes the version already in package.json, so the tag only selects the commit.
         run: |
-          # An `&&` one-liner here is exempt from `set -e` only while another command
-          # follows it. Made an `if` so that reordering or appending cannot turn the
-          # unset-token case, which is Option A above, into a silent step failure.
+          # `if`, not `&&`: a trailing `&&` is exempt from `set -e` only while another command
+          # follows it, so appending here would make an unset token pass silently.
           if [ -n "$NPM_TOKEN" ]; then
             npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
           fi
