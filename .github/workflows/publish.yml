@@ -4,12 +4,13 @@
 #
 # Tags are bare semver, e.g. `0.2.0`, and `npm run release` creates one.
 #
-# Publishing is not set up yet, and the two mechanisms are a sequence rather than a choice.
+# The two publish mechanisms are a sequence rather than a choice, and we are at step one.
 #
 # The FIRST publish needs an NPM_TOKEN repository secret, because npm cannot configure
 # trusted publishing for a package that does not exist yet: `npm trust` requires the package
 # to be on the registry already (npm/cli#8544). Classic tokens no longer exist, so this is a
-# granular token, and granular write tokens cap at 90 days.
+# granular token, and granular write tokens cap at 90 days. That secret is set (IT-189), so
+# a tag push publishes today.
 #
 # AFTERWARDS, add a GitHub Actions trusted publisher for this repo and workflow on npmjs.com
 # and delete the secret. The step below skips the token path whenever NPM_TOKEN is unset, so
@@ -60,10 +61,9 @@ jobs:
         # Publishes to npm with a provenance attestation (requires id-token: write above).
         # Lint and build run automatically as part of the release process.
         #
-        # Option A (OIDC): leave NPM_TOKEN unset, the token step is skipped and
-        #   npm uses the OIDC exchange instead.
-        # Option B (token): set NPM_TOKEN in repo secrets, and it is written to
-        #   .npmrc here before publishing.
+        # NPM_TOKEN is set today, so it is written to .npmrc below. Once a trusted publisher
+        # exists and the secret is deleted, this step skips the token and npm uses the OIDC
+        # exchange instead, which is the migration described at the top of this file.
         run: |
           # An `&&` one-liner here is exempt from `set -e` only while another command
           # follows it. Made an `if` so that reordering or appending cannot turn the
