@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-crustdata",
+  "name": "@crustdata/n8n-nodes-crustdata",
   "version": "0.1.0",
   "description": "Search and enrich 800M+ people and 200M+ companies with Crustdata, plus live web search",
   "license": "MIT",

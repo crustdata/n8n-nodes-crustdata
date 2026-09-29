@@ -1,4 +1,4 @@
-# n8n-nodes-crustdata
+# @crustdata/n8n-nodes-crustdata
 
 This is an n8n community node. It lets you use [Crustdata](https://crustdata.com) in your n8n
 workflows.
@@ -28,7 +28,7 @@ in the n8n community nodes documentation, or install it from the panel:
 
 1. Go to **Settings > Community Nodes**
 2. Select **Install**
-3. Enter `n8n-nodes-crustdata` in **Enter npm package name**
+3. Enter `@crustdata/n8n-nodes-crustdata` in **Enter npm package name**
 4. Agree to the [risks](https://docs.n8n.io/integrations/community-nodes/risks/) of using
    community nodes
 5. Select **Install**
