@@ -1,14 +1,3 @@
-# Publishes n8n-nodes-crustdata to npm with provenance on a version tag push; n8n requires
-# community nodes to be published this way. Tags are bare semver, e.g. `0.2.0`.
-#
-# The token and trusted publishing are a sequence, not a choice: npm cannot configure trusted
-# publishing for a package that does not exist yet (npm/cli#8544), so the first publish needs
-# the NPM_TOKEN secret. Afterwards add a trusted publisher on npmjs.com and delete the secret;
-# the step below skips the token whenever NPM_TOKEN is unset, so that is the whole migration.
-# It cannot be scripted: a bypass-2FA token may not change trusted publishing configuration.
-# IT-189 tracks the token and the deadline after which a token publish only STAGES a release
-# for a maintainer to approve.
-
 name: Publish
 
 on:
@@ -22,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      # Required to mint an OIDC token for npm provenance attestation.
       id-token: write
-      # Scoped down from the default (write) for least-privilege publishing.
       contents: read
 
     steps:
@@ -40,11 +27,7 @@ jobs:
         run: 'npm ci'
 
       - name: Release
-        # `npm run release` lints and builds first; in CI it skips release-it entirely and
-        # publishes the version already in package.json, so the tag only selects the commit.
         run: |
-          # `if`, not `&&`: a trailing `&&` is exempt from `set -e` only while another command
-          # follows it, so appending here would make an unset token pass silently.
           if [ -n "$NPM_TOKEN" ]; then
             npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
           fi
